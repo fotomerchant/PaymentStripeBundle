@@ -22,8 +22,10 @@ class RuudkPaymentStripeExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->setParameter('ruudk_payment_stripe.api_key', $config['api_key']);
-
+        if(isset($config['api_key'])) {
+            $container->setParameter('ruudk_payment_stripe.api_key', $config['api_key']);
+        }
+        
         foreach($config['methods'] AS $method) {
             $this->addFormType($container, $method);
         }
