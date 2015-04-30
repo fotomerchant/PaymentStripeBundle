@@ -20,7 +20,8 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('api_key')
-                    ->defaultNull()
+                    ->isRequired()
+                    ->cannotBeEmpty()
                 ->end()
                 ->booleanNode('logger')
                     ->defaultTrue()
