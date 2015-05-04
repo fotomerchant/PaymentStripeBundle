@@ -146,6 +146,14 @@ class CheckoutPlugin extends AbstractPlugin
             'token'       => $data->get('token'),
         );
 
+	if ($data->get('destination')) {
+	    $parameters['destination'] = $data->get('destination');
+	}
+
+	if ($data->get('applicationFee')) {
+	    $parameters['applicationFee'] = $data->get('applicationFee');
+	}
+
         return $parameters;
     }
 }
