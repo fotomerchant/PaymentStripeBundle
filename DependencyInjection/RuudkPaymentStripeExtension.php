@@ -4,8 +4,10 @@ namespace Ruudk\Payment\StripeBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class RuudkPaymentStripeExtension extends Extension
@@ -22,7 +24,19 @@ class RuudkPaymentStripeExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->setParameter('ruudk_payment_stripe.api_key', $config['api_key']);
+        // If an API Key is provided, we will setup the 'default' stripe checkout plugin for 'stripe_checkout'
+        // payment types. This ensure no BC breaks for this bundle.
+        if (isset($config['api_key'])) {
+            $this->addCheckoutPluginInstance($container, 'default', $config);
+
+            // Add aliases for BC
+            $container->setAlias('ruudk_payment_stripe.gateway', 'ruudk_payment_stripe.gateway.default');
+            $container->setAlias('ruudk_payment_stripe.plugin.checkout', 'ruudk_payment_stripe.plugin.checkout.default');
+        }
+
+        foreach($config['instances'] AS $instance => $options) {
+            $this->addCheckoutPluginInstance($container, $instance, $options);
+        }
 
         foreach($config['methods'] AS $method) {
             $this->addFormType($container, $method);
@@ -59,5 +73,18 @@ class RuudkPaymentStripeExtension extends Extension
             sprintf('ruudk_payment_stripe.form.%s_type', $method),
             $definition
         );
+    }
+
+    private function addCheckoutPluginInstance($container, $instance, $options)
+    {
+        $gatewayDefinition = new Definition('%ruudk_payment_stripe.gateway.class%', [null, new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false)]);
+        $gatewayDefinition->addMethodCall('setApiKey', [ $options['api_key'] ]);
+        $container->setDefinition('ruudk_payment_stripe.gateway.'.$instance, $gatewayDefinition);
+
+        $pluginDefinition = new Definition("%ruudk_payment_stripe.plugin.checkout.class%", [ new Reference('ruudk_payment_stripe.gateway.'.$instance) ]);
+        $pluginDefinition->addMethodCall('setLogger', [ new Reference('monolog.logger.ruudk_payment_stripe') ]);
+        $pluginDefinition->addMethodCall('setProcessesType', [ $options['processes_type'] ]);
+        $pluginDefinition->addTag('payment.plugin');
+        $container->setDefinition('ruudk_payment_stripe.plugin.checkout.'.$instance, $pluginDefinition);
     }
 }

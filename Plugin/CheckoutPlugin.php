@@ -21,6 +21,11 @@ class CheckoutPlugin extends AbstractPlugin
      */
     protected $logger;
 
+    /**
+     * @var string
+     */
+    protected $processesType;
+
     public function __construct(Gateway $gateway)
     {
         $this->gateway = $gateway;
@@ -34,9 +39,14 @@ class CheckoutPlugin extends AbstractPlugin
         $this->logger = $logger;
     }
 
+    public function setProcessesType($processesType)
+    {
+        $this->processesType = $processesType;
+    }
+
     public function processes($name)
     {
-        return $name == 'stripe_checkout';
+        return $name == $this->processesType;
     }
 
     public function approveAndDeposit(FinancialTransactionInterface $transaction, $retry)
@@ -146,13 +156,17 @@ class CheckoutPlugin extends AbstractPlugin
             'token'       => $data->get('token'),
         );
 
-	if ($data->get('destination')) {
-	    $parameters['destination'] = $data->get('destination');
-	}
+        if ($data->has('destination')) {
+            $parameters['destination'] = $data->get('destination');
+        }
 
-	if ($data->get('applicationFee')) {
-	    $parameters['applicationFee'] = $data->get('applicationFee');
-	}
+        if ($data->has('applicationFee')) {
+            $parameters['applicationFee'] = $data->get('applicationFee');
+        }
+
+        if($data->has('stripeAccount')) {
+            $parameters['stripeAccount'] = $data->get('stripeAccount');
+        }
 
         return $parameters;
     }
