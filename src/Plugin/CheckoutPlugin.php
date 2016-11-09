@@ -60,6 +60,15 @@ class CheckoutPlugin extends AbstractPlugin
             $this->logger->info(json_encode($response->getData()));
         }
 
+        if(array_key_exists('id', $response->getData()))
+            $transaction->getPayment()->getPaymentInstruction()->getExtendedData()->set('stripe_charge_id', $response->getTransactionReference());
+
+        if(array_key_exists('balance_transaction', $response->getData()))
+            $transaction->getPayment()->getPaymentInstruction()->getExtendedData()->set('balance_transaction_id', $response->getBalanceTransactionReference());
+
+        if(array_key_exists('application_fee', $response->getData()))
+            $transaction->getPayment()->getPaymentInstruction()->getExtendedData()->set('application_fee_id', $response->getData()['application_fee']);
+
         if($response->isSuccessful()) {
             $transaction->setReferenceNumber($response->getTransactionReference());
 
@@ -158,6 +167,14 @@ class CheckoutPlugin extends AbstractPlugin
 
         if ($data->has('destination')) {
             $parameters['destination'] = $data->get('destination');
+        }
+
+        if ($data->has('receiptEmail')) {
+            $parameters['receipt_email'] = $data->get('receiptEmail');
+        }
+
+        if ($data->has('statementDescriptor')) {
+            $parameters['statement_descriptor'] = $data->get('statementDescriptor');
         }
 
         if ($data->has('applicationFee')) {
