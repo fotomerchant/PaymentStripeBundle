@@ -9,7 +9,6 @@ use JMS\Payment\CoreBundle\Plugin\Exception\FinancialException;
 use JMS\Payment\CoreBundle\Plugin\PluginInterface;
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Stripe\Gateway;
-use Omnipay\Stripe\Message\AbstractRequest;
 use Psr\Log\LoggerInterface;
 
 class CheckoutPlugin extends AbstractPlugin
