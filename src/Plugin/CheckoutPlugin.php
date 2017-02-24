@@ -7,6 +7,7 @@ use JMS\Payment\CoreBundle\Model\FinancialTransactionInterface;
 use JMS\Payment\CoreBundle\Plugin\AbstractPlugin;
 use JMS\Payment\CoreBundle\Plugin\Exception\FinancialException;
 use JMS\Payment\CoreBundle\Plugin\PluginInterface;
+use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Stripe\Gateway;
 use Omnipay\Stripe\Message\AbstractRequest;
 use Psr\Log\LoggerInterface;
@@ -251,12 +252,12 @@ class CheckoutPlugin extends AbstractPlugin
     }
 
     /**
-     * @param AbstractRequest               $response
+     * @param AbstractResponse               $response
      * @param FinancialTransactionInterface $transaction
      *
      * @return FinancialException
      */
-    private function handleError(AbstractRequest $response, FinancialTransactionInterface $transaction)
+    private function handleError(AbstractResponse $response, FinancialTransactionInterface $transaction)
     {
         $data = $response->getData();
 
