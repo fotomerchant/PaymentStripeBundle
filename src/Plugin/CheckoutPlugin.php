@@ -157,6 +157,10 @@ class CheckoutPlugin extends AbstractPlugin
             $parameters['stripeAccount'] = $data->get('stripeAccount');
         }
 
+        if ($data->has('stripeVersion')) {
+            $parameters['stripeVersion'] = $data->get('stripeVersion');
+        }
+
         return $parameters;
     }
 
@@ -267,7 +271,7 @@ class CheckoutPlugin extends AbstractPlugin
                 $ex->setFinancialTransaction($transaction);
 
                 $transaction->setResponseCode('FAILED');
-                $transaction->setReasonCode($response->getMessage());
+                $transaction->setReasonCode(substr($response->getMessage(), 0, 100));
                 $transaction->setState(FinancialTransactionInterface::STATE_FAILED);
 
                 break;
@@ -278,7 +282,7 @@ class CheckoutPlugin extends AbstractPlugin
                 $ex->setFinancialTransaction($transaction);
 
                 $transaction->setResponseCode('FAILED');
-                $transaction->setReasonCode($response->getMessage());
+                $transaction->setReasonCode(substr($response->getMessage(), 0, 100));
                 $transaction->setState(FinancialTransactionInterface::STATE_FAILED);
 
                 break;
@@ -289,7 +293,7 @@ class CheckoutPlugin extends AbstractPlugin
                 $ex->setFinancialTransaction($transaction);
 
                 $transaction->setResponseCode('FAILED');
-                $transaction->setReasonCode($response->getMessage());
+                $transaction->setReasonCode(substr($response->getMessage(), 0, 100));
                 $transaction->setState(FinancialTransactionInterface::STATE_FAILED);
 
                 break;
