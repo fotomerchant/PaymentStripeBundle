@@ -153,12 +153,12 @@ class CheckoutPlugin extends AbstractPlugin
             $parameters['applicationFee'] = $data->get('applicationFee');
         }
 
-        if ($data->has('stripeAccount')) {
-            $parameters['stripeAccount'] = $data->get('stripeAccount');
-        }
-
         if ($data->has('stripeVersion')) {
             $parameters['stripeVersion'] = $data->get('stripeVersion');
+        }
+
+        if ($data->has('stripeAccount')) {
+            $parameters['stripeAccount'] = $data->get('stripeAccount');
         }
 
         return $parameters;
@@ -245,6 +245,10 @@ class CheckoutPlugin extends AbstractPlugin
         $parameters['refundApplicationFee'] = true;
         if ($data->has('refundApplicationFee')) {
             $parameters['refundApplicationFee'] = $data->get('refundApplicationFee');
+        }
+
+        if ($data->has('stripeVersion')) {
+            $parameters['stripeVersion'] = $data->get('stripeVersion');
         }
 
         if ($data->has('stripeAccount')) {
