@@ -161,6 +161,10 @@ class CheckoutPlugin extends AbstractPlugin
             $parameters['stripeAccount'] = $data->get('stripeAccount');
         }
 
+        if ($data->has('metadata')) {
+            $parameters['metadata'] = $data->get('metadata');
+        }
+
         return $parameters;
     }
 
@@ -253,6 +257,10 @@ class CheckoutPlugin extends AbstractPlugin
 
         if ($data->has('stripeAccount')) {
             $parameters['stripeAccount'] = $data->get('stripeAccount');
+        }
+
+        if ($data->has('metadata')) {
+            $parameters['metadata'] = $data->get('metadata');
         }
 
         return $parameters;
