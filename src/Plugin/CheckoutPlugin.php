@@ -157,8 +157,8 @@ class CheckoutPlugin extends AbstractPlugin
             $parameters['stripeVersion'] = $data->get('stripeVersion');
         }
 
-        if ($data->has('connectedStripeAccount')) {
-            $parameters['connectedStripeAccountHeader'] = $data->get('connectedStripeAccount');
+        if ($data->has('connectedStripeAccountHeader')) {
+            $parameters['connectedStripeAccountHeader'] = $data->get('connectedStripeAccountHeader');
         }
 
         if ($data->has('metadata')) {
