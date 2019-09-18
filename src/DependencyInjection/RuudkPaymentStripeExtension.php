@@ -76,11 +76,19 @@ class RuudkPaymentStripeExtension extends Extension
 
     private function addCheckoutPluginInstance($container, $instance, $options)
     {
-        $gatewayDefinition = new Definition('%ruudk_payment_stripe.gateway.class%', [null, new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false)]);
+        $gatewayClass = '%ruudk_payment_stripe.gateway.class%';
+        $checkoutClass = '%ruudk_payment_stripe.plugin.checkout.class%';
+
+        if ($options['type'] === 'payment_intents') {
+            $gatewayClass = '%ruudk_payment_stripe.payment_intents_gateway.class%';
+            $checkoutClass = '%ruudk_payment_stripe.plugin.checkout_payment_intents.class%';
+        }
+
+        $gatewayDefinition = new Definition($gatewayClass, [null, new Reference('request', ContainerInterface::NULL_ON_INVALID_REFERENCE, false)]);
         $gatewayDefinition->addMethodCall('setApiKey', [ $options['api_key'] ]);
         $container->setDefinition('ruudk_payment_stripe.gateway.'.$instance, $gatewayDefinition);
 
-        $pluginDefinition = new Definition("%ruudk_payment_stripe.plugin.checkout.class%", [ new Reference('ruudk_payment_stripe.gateway.'.$instance) ]);
+        $pluginDefinition = new Definition($checkoutClass, [ new Reference('ruudk_payment_stripe.gateway.'.$instance) ]);
         $pluginDefinition->addMethodCall('setLogger', [ new Reference('monolog.logger.ruudk_payment_stripe') ]);
         $pluginDefinition->addMethodCall('setProcessesType', [ $options['processes_type'] ]);
         $pluginDefinition->addTag('payment.plugin');

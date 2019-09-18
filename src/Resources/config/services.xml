@@ -6,9 +6,11 @@
 
     <parameters>
         <parameter key="ruudk_payment_stripe.gateway.class">Omnipay\Stripe\Gateway</parameter>
+        <parameter key="ruudk_payment_stripe.payment_intents_gateway.class">Omnipay\Stripe\PaymentIntentsGateway</parameter>
         <parameter key="ruudk_payment_stripe.form.stripe_type.class">Ruudk\Payment\StripeBundle\Form\StripeType</parameter>
         <parameter key="ruudk_payment_stripe.form.checkout_type.class">Ruudk\Payment\StripeBundle\Form\CheckoutType</parameter>
         <parameter key="ruudk_payment_stripe.plugin.checkout.class">Ruudk\Payment\StripeBundle\Plugin\CheckoutPlugin</parameter>
+        <parameter key="ruudk_payment_stripe.plugin.checkout_payment_intents.class">Ruudk\Payment\StripeBundle\Plugin\CheckoutPaymentIntentsPlugin</parameter>
     </parameters>
 
     <services>
