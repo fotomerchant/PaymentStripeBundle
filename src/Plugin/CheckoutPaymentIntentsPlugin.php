@@ -323,10 +323,21 @@ class CheckoutPaymentIntentsPlugin extends AbstractPlugin
 
         $transaction->setTrackingId($credit->getId());
 
+        if (! $data->has('charge_id')) {
+            // For backwards compatibility
+            if (! $data->has('stripe_charge_id')) {
+                throw new Exception('Payment Instruction does not contain `charge_id`');
+            } else {
+                $chargeId = $data->get('stripe_charge_id');
+            }
+        } else {
+            $chargeId = $data->get('charge_id');
+        }
+
         $parameters = array(
             'amount' => $credit->getTargetAmount(),
             'currency' => $paymentInstruction->getCurrency(),
-            'transactionReference' => $data->get('charge_id')
+            'transactionReference' => $chargeId,
         );
 
         // By default we will refund the application fee
@@ -341,6 +352,10 @@ class CheckoutPaymentIntentsPlugin extends AbstractPlugin
 
         if ($data->has('connectedStripeAccountHeader')) {
             $parameters['connectedStripeAccountHeader'] = $data->get('connectedStripeAccountHeader');
+        } else {
+            if ($data->has('stripeAccount')) {
+                $parameters['connectedStripeAccountHeader'] = $data->get('stripeAccount');
+            }
         }
 
         if ($data->has('metadata')) {
