@@ -12,8 +12,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('ruudk_payment_stripe');
+        $treeBuilder = new TreeBuilder('ruudk_payment_stripe');
+        $rootNode = $treeBuilder->getRootNode();
 
         $methods = array('checkout');
 
